@@ -1,0 +1,22 @@
+/*
+Theme Name: XY Themes - Bootstrap plus HTML5 Boilerplate
+Theme URI: http://xythemes.com/
+Description: XY Themes - Bootstrap plus HTML5 Boilerplate
+Version: 0.0.1
+Author: Marcz Hermo
+Author URI: http://www.marczhermo.com
+Tags: XY Themes, Bootstrap, HTML5 Boilerplate
+*/
+
+
+/*
+Headline 1 - 1.25em (16 x 1.25 = 20)
+Headline 2 - 1.125em (16 × 1.125 = 18)
+Headline 3 - 1em (1em = 16px)
+Main text - 0.875em (16 x 0.875 = 14)
+Sub text - 0.75em (16 x 0.75 = 12)
+Footnotes - 0.625em (16 x 0.625 = 10)
+*/
+body {
+    font-size: 0.875em;
+}
