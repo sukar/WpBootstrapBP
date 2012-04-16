@@ -16,7 +16,7 @@ global $xylayout, $xythemesObj;//var_dump($GLOBALS);
 <!-- does not show document mode in developer tools of ie9 -->
 <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> -->
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="<?php bloginfo('template_directory'); ?>/style.css" />
+<link rel="stylesheet" type="text/css" href="<?php bloginfo( 'stylesheet_url' ); ?>" />
 <link rel="stylesheet/less" href="<?php bloginfo('template_directory'); ?>/style.less">
 <script src="<?php bloginfo('template_directory'); ?>/js/libs/less-1.2.2.min.js"></script>
 <script src="<?php bloginfo('template_directory'); ?>/js/libs/modernizr-2.5-respond-1.1.0.min.js"></script>
