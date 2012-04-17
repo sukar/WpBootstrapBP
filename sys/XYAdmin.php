@@ -46,20 +46,16 @@ class XYAdmin extends XYHelper {
 
         add_filter('wp_page_menu_args', array(&$this, 'main_menu_args'));
 
-        // Load the Admin Options page
-        add_action('admin_menu', array(&$this, 'menu_options'));
+        if ( is_admin() ){ // admin actions
+          // Load the Admin Options page
+          add_action('admin_menu', array(&$this, 'menu_options'));
 
-        // Settings API options initilization and validation
-        add_action( 'admin_init', array(&$this, 'register_options'));
+          // Settings API options initilization and validation
+          add_action( 'admin_init', array(&$this, 'register_options'));
+        }
 
     }
 
-    function register_options(){
-      // Register Settings
-      register_setting( 'xythemes_options', 'xythemes_options', array(&$this, 'options_validate'));
-    }
-    
-    
     // Get our wp_nav_menu() fallback, wp_page_menu(), to show a home link.
     function main_menu_args( $args ) 
     {
@@ -94,6 +90,16 @@ class XYAdmin extends XYHelper {
           'personalize' => 'Personalize'
      );
      return $tabs;
+    }
+
+    function register_options(){
+      // Register Settings
+      register_setting( 'xythemes_options', 'xythemes_options', array(&$this, 'options_validate'));
+    }
+
+    function options_validate($input) 
+    {
+      return $input;
     }
 
     // Admin settings page markup
