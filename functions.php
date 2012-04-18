@@ -2,21 +2,9 @@
 /**
  * @package WordPress
  * @subpackage XY Themes - Bootstrap plus HTML5 Boilerplate */
-
+define('XY', "XYThemes_");
 define('XYTHEMESDIR', get_template_directory());
 require XYTHEMESDIR.'/sys/XYConfig.php';
 
-if (!class_exists("XYThemes")) {
-  class XYThemes extends XYView {
-      
-    function __construct()
-    {
-        parent::__construct();
-    }
-     
-  }
-}
-if (class_exists("XYThemes")) {
-  $xythemesObj = new XYThemes();
-}
-?>
+$class = XY;
+$xythemesObj = new $class;

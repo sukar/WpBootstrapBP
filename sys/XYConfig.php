@@ -7,6 +7,7 @@
 require XYTHEMESDIR . '/sys/XYHelper.php';
 require XYTHEMESDIR . '/sys/XYAdmin.php';
 require XYTHEMESDIR . '/sys/XYView.php';
+require XYTHEMESDIR . '/sys/XYThemes.php';
 
 class XYConfig {
 
