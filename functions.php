@@ -2,9 +2,8 @@
 /**
  * @package WordPress
  * @subpackage XY Themes - Bootstrap plus HTML5 Boilerplate */
-define('XY', "XYThemes_");
+define('XY', "xythemes");
+define('XYNAME', "XY Themes");
 define('XYTHEMESDIR', get_template_directory());
 require XYTHEMESDIR.'/sys/XYConfig.php';
-
-$class = XY;
-$xythemesObj = new $class;
+$xythemesObj = new XYThemes;

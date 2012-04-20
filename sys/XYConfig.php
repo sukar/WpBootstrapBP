@@ -18,12 +18,12 @@ class XYConfig {
     }
 
     function initconfig() {
-        if (file_exists(XYTHEMESDIR . '/sys/xyconfigfile.php')) {
-            include XYTHEMESDIR . '/sys/xyconfigfile.php';
+        if (file_exists(XYTHEMESDIR . '/sys/XYConfigFile.php')) {
+            include XYTHEMESDIR . '/sys/XYConfigFile.php';
             $this->xyconf = array_merge($this->xyconf, $xyconf);
             unset($xyconf);
         } else {
-            die('Configuration file not found!');
+            die('Configuration file (XYConfigFile) not found!');
         }
     }
 

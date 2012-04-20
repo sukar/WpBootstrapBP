@@ -56,53 +56,63 @@ class XYAdmin extends XYHelper {
 
     }
 
+    function register_post_gallery() 
+    {
+      register_post_type( XY.'_gallery',
+        array(
+          'labels' => array(
+          'name' => __('Gallery'),
+          'singular_name' => __('Gallery')
+          ),
+          'public' => true,
+          'has_archive' => true,
+          'rewrite' => array('slug' => 'gallery')
+          )
+      );
+    }
+
     // Get our wp_nav_menu() fallback, wp_page_menu(), to show a home link.
     function main_menu_args( $args ) 
     {
       $args['show_home'] = true;
       return $args;
     }
-    
-    function register_post_gallery() 
-    {
-      register_post_type( 'xythemes_gallery',
-          array(
-              'labels' => array(
-                  'name' => __( 'Gallery' ),
-                  'singular_name' => __( 'Gallery' )
-              ),
-              'public' => true,
-              'has_archive' => true,
-              'rewrite' => array('slug' => 'gallery')
-          )
-      );
-    }
 
     function menu_options() 
     {
-      add_theme_page('XYTHemes Options', 'XYThemes', 'edit_theme_options', 'xythemes-settings', array(&$this, 'admin_options_page'));
-    }
-
-    function get_settings_page_tabs() 
-    {
-      $tabs = array(
-          'general' => 'General',
-          'personalize' => 'Personalize'
-     );
-     return $tabs;
+      add_theme_page(XYNAME.' Settings', XYNAME , 'edit_theme_options', XY, array(&$this, 'admin_options_page'));
     }
 
     function register_options(){
-      // Register Settings
-      register_setting( 'xythemes_options', 'xythemes_options', array(&$this, 'options_validate'));
+      register_setting(XY.'_options', XY, array(&$this, 'options_validate'));
+      add_settings_section('plugin_main', 'Main Settings', array(&$this, 'plugin_section_text'), XY);
+      add_settings_field('plugin_text_string', 'Plugin Text Input', array(&$this, 'plugin_setting_string'), XY, 'plugin_main');
     }
 
-    function options_validate($input) 
+    function plugin_section_text() 
     {
-      return $input;
+      echo '<p>Main description of this section here.</p>';
     }
 
-    // Admin settings page markup
+    function plugin_setting_string() {
+      $fieldname = XY.'_options';
+      $options = get_option($fieldname);
+      echo '<input id="plugin_text_string" name="'.$fieldname.'[text_string]" size="40" type="text" value="'.$options['text_string'].'" />';
+    }
+
+    function get_theme_options() 
+    {
+      $defaults = array(
+        'type' => 'post',
+        'option1' => "check1",
+        'sometext' => "test1",
+        'echo' => TRUE
+      );
+      //$option_defaults = $defaults;//oenology_get_option_defaults();
+      $options = wp_parse_args(get_option(XY, array()), $defaults);
+      return $options;
+    }
+
     function admin_options_page() 
     { ?>
          <div class="wrap">
@@ -112,15 +122,36 @@ class XYAdmin extends XYHelper {
               } ?>
          <form action="options.php" method="post">
          <?php
-         settings_fields('xythemes_options');
-         do_settings_sections('xythemes');
+         $fieldname = XY.'_options';
+         settings_fields($fieldname);
+         $options = $this->get_theme_options();var_dump($options);
+         do_settings_sections(XY);
          ?>
          <?php $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'general' ); ?>
-         <input name="xythemes_options[submit-<?php echo $tab; ?>]" type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', 'xythemes'); ?>" />
-         <input name="xythemes_options[reset-<?php echo $tab; ?>]" type="submit" class="button-secondary" value="<?php esc_attr_e('Reset Defaults', 'xythemes'); ?>" />
+         <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $fieldname['option1']); ?> />
+         <input name="<?php echo $fieldname; ?>[sometext]" type="text" value="<?php echo $fieldname['sometext']; ?>" />
+         <input name="<?php echo $fieldname; ?>[submit-<?php echo $tab; ?>]" type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', XY); ?>" />
+         <input name="<?php echo $fieldname; ?>[reset-<?php echo $tab; ?>]" type="submit" class="button-secondary" value="<?php esc_attr_e('Reset Defaults', XY); ?>" />
          </form>
          </div>
     <?php }
+
+    
+    function options_validate($input) 
+    {
+      //$input['option1'] = ($input['option1'] == 1 ? 1 : 0);          //either 0 or 1
+      //$input['sometext'] =  wp_filter_nohtml_kses($input['sometext']); //safe text with no HTML tags
+      return $input;
+    }
+
+    function get_settings_page_tabs() 
+    {
+      $tabs = array(
+          'general' => 'General',
+          'branding' => 'Branding'
+     );
+     return $tabs;
+    }
 
     function admin_options_page_tabs( $current = 'general' ) 
     {
@@ -133,9 +164,9 @@ class XYAdmin extends XYHelper {
       $links = array();
       foreach( $tabs as $tab => $name ) :
           if ( $tab == $current ) :
-               $links[] = '<a class="nav-tab nav-tab-active" href="?page=xythemes-settings&tab='.$tab.'">'.$name.'</a>';
+               $links[] = '<a class="nav-tab nav-tab-active" href="?page=xythemes&tab='.$tab.'">'.$name.'</a>';
           else :
-               $links[] = '<a class="nav-tab" href="?page=xythemes-settings&tab='.$tab.'">'.$name.'</a>';
+               $links[] = '<a class="nav-tab" href="?page=xythemes&tab='.$tab.'">'.$name.'</a>';
           endif;
       endforeach;
       echo '<div id="icon-themes" class="icon32"><br /></div>';
@@ -144,5 +175,4 @@ class XYAdmin extends XYHelper {
           echo $link;
       echo '</h2>';
     }
-
 }
