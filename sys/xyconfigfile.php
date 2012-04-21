@@ -18,6 +18,18 @@ $xyconf['sidebarLeftColumns'] = 4;
 $xyconf['sidebarRightColumns'] = 4;
 
 // About Wordpress
+// Settings API
+$xyconf['tabs'] = array(
+		'general' => 'General',
+		'branding' => 'Branding'
+	);
+// Template
+$xyconf['defaults'] = array(
+        'type' => 'post',
+        'option1' => "0",
+        'plugin_text_string' => "test1",
+        'echo' => TRUE
+      );
 $xyconf['sidebarPositions'] = 'leftmainright';
 $xyconf['logo'] = "";
 $xyconf['font'] = "san-serif";

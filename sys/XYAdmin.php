@@ -106,14 +106,9 @@ class XYAdmin extends XYHelper {
 
     function get_theme_options() 
     {
-      $defaults = array(
-        'type' => 'post',
-        'option1' => "0",
-        'plugin_text_string' => "test1",
-        'echo' => TRUE
-      );
+      $cfg = $this->getxyconfig();
       //$option_defaults = $defaults;//oenology_get_option_defaults();
-      $options = wp_parse_args(get_option(XY, array()), $defaults);
+      $options = wp_parse_args(get_option(XY, array()), $cfg['defaults']);
       return $options;
     }
 
@@ -128,7 +123,7 @@ class XYAdmin extends XYHelper {
          <?php
          $fieldname = XY;
          settings_fields($fieldname);
-         $options = $this->get_theme_options();var_dump($options);
+         $options = $this->get_theme_options();echo '<pre>';var_dump($this->getxyconfig());echo '</pre>';
          do_settings_sections(XY);
          ?>
          <?php $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'general' ); ?>
@@ -151,11 +146,8 @@ class XYAdmin extends XYHelper {
 
     function get_settings_page_tabs() 
     {
-      $tabs = array(
-          'general' => 'General',
-          'branding' => 'Branding'
-     );
-     return $tabs;
+      $cfg = $this->getxyconfig();
+      return $cfg['tabs'];
     }
 
     function admin_options_page_tabs( $current = 'general' ) 
@@ -169,9 +161,9 @@ class XYAdmin extends XYHelper {
       $links = array();
       foreach( $tabs as $tab => $name ) :
           if ( $tab == $current ) :
-               $links[] = '<a class="nav-tab nav-tab-active" href="?page=xythemes&tab='.$tab.'">'.$name.'</a>';
+               $links[] = '<a class="nav-tab nav-tab-active" href="?page='.XY.'&tab='.$tab.'">'.$name.'</a>';
           else :
-               $links[] = '<a class="nav-tab" href="?page=xythemes&tab='.$tab.'">'.$name.'</a>';
+               $links[] = '<a class="nav-tab" href="?page='.XY.'&tab='.$tab.'">'.$name.'</a>';
           endif;
       endforeach;
       echo '<div id="icon-themes" class="icon32"><br /></div>';

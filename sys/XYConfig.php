@@ -27,4 +27,8 @@ class XYConfig {
         }
     }
 
+    function getxyconfig() {
+        return $this->xyconf;
+    }
+
 }
