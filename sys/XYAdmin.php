@@ -84,9 +84,12 @@ class XYAdmin extends XYHelper {
     }
 
     function register_options(){
-      register_setting(XY.'_options', XY, array(&$this, 'options_validate'));
-      add_settings_section('plugin_main', 'Main Settings', array(&$this, 'plugin_section_text'), XY);
-      add_settings_field('plugin_text_string', 'Plugin Text Input', array(&$this, 'plugin_setting_string'), XY, 'plugin_main');
+      // add_settings_section($id, $title, $callback, $page)
+      add_settings_section(XY.'_sections', 'Theme Section', array(&$this, 'plugin_section_text'), XY);
+      // add_settings_field($id, $title, $callback, $page, $section = 'default', $args = array())
+      add_settings_field(XY, 'Theme Fields', array(&$this, 'plugin_setting_string'), XY, XY.'_sections');
+      // register_setting( $option_group, $option_name, $sanitize_callback )
+      register_setting(XY, XY, array(&$this, 'options_validate'));
     }
 
     function plugin_section_text() 
@@ -95,17 +98,18 @@ class XYAdmin extends XYHelper {
     }
 
     function plugin_setting_string() {
-      $fieldname = XY.'_options';
-      $options = get_option($fieldname);
-      echo '<input id="plugin_text_string" name="'.$fieldname.'[text_string]" size="40" type="text" value="'.$options['text_string'].'" />';
+      $fieldname = XY;
+      //$options = get_option($fieldname);
+      $options = $this->get_theme_options();
+      echo '<input id="plugin_text_string" name="'.$fieldname.'[plugin_text_string]" size="40" type="text" value="'.$options['plugin_text_string'].'" />';
     }
 
     function get_theme_options() 
     {
       $defaults = array(
         'type' => 'post',
-        'option1' => "check1",
-        'sometext' => "test1",
+        'option1' => "0",
+        'plugin_text_string' => "test1",
         'echo' => TRUE
       );
       //$option_defaults = $defaults;//oenology_get_option_defaults();
@@ -122,14 +126,14 @@ class XYAdmin extends XYHelper {
               } ?>
          <form action="options.php" method="post">
          <?php
-         $fieldname = XY.'_options';
+         $fieldname = XY;
          settings_fields($fieldname);
          $options = $this->get_theme_options();var_dump($options);
          do_settings_sections(XY);
          ?>
          <?php $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'general' ); ?>
-         <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $fieldname['option1']); ?> />
-         <input name="<?php echo $fieldname; ?>[sometext]" type="text" value="<?php echo $fieldname['sometext']; ?>" />
+         <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $options['option1']); ?> />
+         <input name="<?php echo $fieldname; ?>[sometext]" size="40" type="text" value="<?php echo $options['sometext']; ?>" />
          <input name="<?php echo $fieldname; ?>[submit-<?php echo $tab; ?>]" type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', XY); ?>" />
          <input name="<?php echo $fieldname; ?>[reset-<?php echo $tab; ?>]" type="submit" class="button-secondary" value="<?php esc_attr_e('Reset Defaults', XY); ?>" />
          </form>
@@ -139,6 +143,7 @@ class XYAdmin extends XYHelper {
     
     function options_validate($input) 
     {
+      //var_dump($input);exit('test');
       //$input['option1'] = ($input['option1'] == 1 ? 1 : 0);          //either 0 or 1
       //$input['sometext'] =  wp_filter_nohtml_kses($input['sometext']); //safe text with no HTML tags
       return $input;
