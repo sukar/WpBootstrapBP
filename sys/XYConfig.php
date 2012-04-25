@@ -31,4 +31,12 @@ class XYConfig {
         return $this->xyconf;
     }
 
+    function get_theme_options() 
+    {
+      $cfg = $this->getxyconfig();
+      //$option_defaults = $defaults;//oenology_get_option_defaults();
+      $options = wp_parse_args(get_option(XY, array()), $cfg['defaults']);
+      return $options;
+    }
+
 }

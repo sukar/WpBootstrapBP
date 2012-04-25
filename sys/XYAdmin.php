@@ -9,6 +9,7 @@ class XYAdmin extends XYHelper {
     var $xytKey = "_XYThemes_Key",
         $xytLnk = "_XYThemes_Lnk",
         $xytJson = "_XYThemes_Jsn",
+        $xytTabs = array(),
         $xytNow = "";
 
     function __construct() 
@@ -19,6 +20,7 @@ class XYAdmin extends XYHelper {
 
     function registerapi() 
     {
+        $this->xytTabs = $this->get_settings_page_tabs();
         register_sidebar(array(
             'name' => __('Left Sidebar', 'xythemes'),
             'id' => 'sidebar-1',
@@ -104,14 +106,6 @@ class XYAdmin extends XYHelper {
       echo '<input id="plugin_text_string" name="'.$fieldname.'[plugin_text_string]" size="40" type="text" value="'.$options['plugin_text_string'].'" />';
     }
 
-    function get_theme_options() 
-    {
-      $cfg = $this->getxyconfig();
-      //$option_defaults = $defaults;//oenology_get_option_defaults();
-      $options = wp_parse_args(get_option(XY, array()), $cfg['defaults']);
-      return $options;
-    }
-
     function admin_options_page() 
     { ?>
          <div class="wrap">
@@ -123,7 +117,7 @@ class XYAdmin extends XYHelper {
          <?php
          $fieldname = XY;
          settings_fields($fieldname);
-         $options = $this->get_theme_options();echo '<pre>';var_dump($this->getxyconfig());echo '</pre>';
+         $options = $this->get_theme_options();echo '<pre>';var_dump($options);echo '</pre>';
          do_settings_sections(XY);
          ?>
          <?php $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'general' ); ?>
