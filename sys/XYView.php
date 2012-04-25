@@ -14,4 +14,3 @@ class XYView extends XYAdmin {
 
 }
 
-?>

@@ -5,6 +5,7 @@
  * @subpackage XY Themes - Bootstrap plus HTML5 Boilerplate 
  */
 require XYTHEMESDIR . '/sys/XYHelper.php';
+require XYTHEMESDIR . '/sys/XYAdminTabs.php';
 require XYTHEMESDIR . '/sys/XYAdmin.php';
 require XYTHEMESDIR . '/sys/XYView.php';
 require XYTHEMESDIR . '/sys/XYThemes.php';

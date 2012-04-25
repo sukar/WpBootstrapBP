@@ -4,12 +4,14 @@
  * @package WordPress
  * @subpackage XY Themes - Bootstrap plus HTML5 Boilerplate 
  */
+
 class XYAdmin extends XYHelper {
 
-    var $xytKey = "_XYThemes_Key",
+    var $xytTabs = array(),
+        $xytTabObj = array(),
+        $xytKey = "_XYThemes_Key",
         $xytLnk = "_XYThemes_Lnk",
         $xytJson = "_XYThemes_Jsn",
-        $xytTabs = array(),
         $xytNow = "";
 
     function __construct() 
@@ -85,13 +87,31 @@ class XYAdmin extends XYHelper {
       add_theme_page(XYNAME.' Settings', XYNAME , 'edit_theme_options', XY, array(&$this, 'admin_options_page'));
     }
 
-    function register_options(){
+    function register_options_old(){
       // add_settings_section($id, $title, $callback, $page)
       add_settings_section(XY.'_sections', 'Theme Section', array(&$this, 'plugin_section_text'), XY);
       // add_settings_field($id, $title, $callback, $page, $section = 'default', $args = array())
       add_settings_field(XY, 'Theme Fields', array(&$this, 'plugin_setting_string'), XY, XY.'_sections');
       // register_setting( $option_group, $option_name, $sanitize_callback )
       register_setting(XY, XY, array(&$this, 'options_validate'));
+    }
+
+    function register_options(){
+      foreach ($this->xytTabs as $name => $label) {
+        $classname = 'XYAdminTab'.$name;
+        $this->loadclass($classname);
+        $this->xytTabObj[$name] = new $classname;
+
+        // register_setting( $option_group, $option_name, $sanitize_callback )
+        register_setting(XY, XY.'_S_'.$name, array(&$this->xytTabObj[$name], 'validate'));
+
+        // add_settings_section($id, $title, $callback, $page)
+        add_settings_section(XY.'_S_'.$name, $label.' Section', array(&$this->xytTabObj[$name], 'printSection'), XY);
+
+        // add_settings_field($id, $title, $callback, $page, $section = 'default', $args = array())
+        add_settings_field(XY.'_F_'.$name, $label.' Fields', array(&$this->xytTabObj[$name], 'printFields'), XY, XY.'_S_'.$name);
+        
+      }
     }
 
     function plugin_section_text() 
@@ -115,14 +135,15 @@ class XYAdmin extends XYHelper {
               } ?>
          <form action="options.php" method="post">
          <?php
-         $fieldname = XY;
-         settings_fields($fieldname);
-         $options = $this->get_theme_options();echo '<pre>';var_dump($options);echo '</pre>';
+         $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'General' );
+         $fieldname = XY.'_S_'.$tab;
+         // Implement settings field security, nonces, etc.
+         settings_fields(XY);
          do_settings_sections(XY);
          ?>
-         <?php $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'general' ); ?>
-         <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $options['option1']); ?> />
-         <input name="<?php echo $fieldname; ?>[sometext]" size="40" type="text" value="<?php echo $options['sometext']; ?>" />
+         <?php  ?>
+         <!-- <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $options['option1']); ?> />
+         <input name="<?php echo $fieldname; ?>[sometext]" size="40" type="text" value="<?php echo $options['sometext']; ?>" /> -->
          <input name="<?php echo $fieldname; ?>[submit-<?php echo $tab; ?>]" type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', XY); ?>" />
          <input name="<?php echo $fieldname; ?>[reset-<?php echo $tab; ?>]" type="submit" class="button-secondary" value="<?php esc_attr_e('Reset Defaults', XY); ?>" />
          </form>
@@ -151,7 +172,7 @@ class XYAdmin extends XYHelper {
       else:
           $current = 'general';
       endif;
-      $tabs = $this->get_settings_page_tabs();
+      $tabs = $this->xytTabs;//$this->get_settings_page_tabs();
       $links = array();
       foreach( $tabs as $tab => $name ) :
           if ( $tab == $current ) :

@@ -20,13 +20,14 @@ $xyconf['sidebarRightColumns'] = 4;
 // About Wordpress
 // Settings API
 $xyconf['tabs'] = array(
-		'general' => 'General'
+		'General' => 'General',
+		'Brand' => 'Branding'
 	);
 // Template
 $xyconf['defaults'] = array(
     'type' => 'post',
     'option1' => "0",
-    'plugin_text_string' => "test1",
+    'plugin_text_string' => "test1b",
     'echo' => TRUE
   );
 $xyconf['default'] = array(
