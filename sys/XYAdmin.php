@@ -7,8 +7,7 @@
 
 class XYAdmin extends XYHelper {
 
-    var $xytTabs = array(),
-        $xytTabObj = array(),
+    var $xytTabObj = array(),
         $xytKey = "_XYThemes_Key",
         $xytLnk = "_XYThemes_Lnk",
         $xytJson = "_XYThemes_Jsn",
@@ -22,7 +21,6 @@ class XYAdmin extends XYHelper {
 
     function registerapi() 
     {
-        $this->xytTabs = $this->get_settings_page_tabs();
         register_sidebar(array(
             'name' => __('Left Sidebar', 'xythemes'),
             'id' => 'sidebar-1',
@@ -97,19 +95,20 @@ class XYAdmin extends XYHelper {
     }
 
     function register_options(){
-      foreach ($this->xytTabs as $name => $label) {
+      $tabs = $this->get_settings_page_tabs();
+      foreach ($tabs as $name => $label) {
         $classname = 'XYAdminTab'.$name;
         $this->loadclass($classname);
         $this->xytTabObj[$name] = new $classname;
 
         // register_setting( $option_group, $option_name, $sanitize_callback )
-        register_setting(XY, XY.'_S_'.$name, array(&$this->xytTabObj[$name], 'validate'));
+        register_setting(XY.'_'.$name, XY.'_'.$name, array(&$this->xytTabObj[$name], 'validate'));
 
         // add_settings_section($id, $title, $callback, $page)
-        add_settings_section(XY.'_S_'.$name, $label.' Section', array(&$this->xytTabObj[$name], 'printSection'), XY);
+        add_settings_section(XY.'_S_'.$name, $label.' Section', array(&$this->xytTabObj[$name], 'printSection'), XY.'_'.$name);
 
         // add_settings_field($id, $title, $callback, $page, $section = 'default', $args = array())
-        add_settings_field(XY.'_F_'.$name, $label.' Fields', array(&$this->xytTabObj[$name], 'printFields'), XY, XY.'_S_'.$name);
+        add_settings_field(XY.'_F_'.$name, $label.' Fields', array(&$this->xytTabObj[$name], 'printFields'), XY.'_'.$name, XY.'_S_'.$name);
         
       }
     }
@@ -136,14 +135,14 @@ class XYAdmin extends XYHelper {
          <form action="options.php" method="post">
          <?php
          $tab = ( isset( $_GET['tab'] ) ? $_GET['tab'] : 'General' );
-         $fieldname = XY.'_S_'.$tab;
+         $fieldname = XY.'_'.$tab;
          // Implement settings field security, nonces, etc.
-         settings_fields(XY);
-         do_settings_sections(XY);
+         settings_fields(XY.'_'.$tab);
+         do_settings_sections(XY.'_'.$tab);
          ?>
          <?php  ?>
-         <!-- <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $options['option1']); ?> />
-         <input name="<?php echo $fieldname; ?>[sometext]" size="40" type="text" value="<?php echo $options['sometext']; ?>" /> -->
+         <!-- <input name="<?php echo $fieldname; ?>[option1]" type="checkbox" value="1" <?php checked('1', $options['option1']); ?> /> -->
+         <!-- <input name="<?php echo $fieldname; ?>[sometext]" size="40" type="text" value="<?php echo $options['sometext']; ?>" /> -->
          <input name="<?php echo $fieldname; ?>[submit-<?php echo $tab; ?>]" type="submit" class="button-primary" value="<?php esc_attr_e('Save Settings', XY); ?>" />
          <input name="<?php echo $fieldname; ?>[reset-<?php echo $tab; ?>]" type="submit" class="button-secondary" value="<?php esc_attr_e('Reset Defaults', XY); ?>" />
          </form>
@@ -172,7 +171,7 @@ class XYAdmin extends XYHelper {
       else:
           $current = 'general';
       endif;
-      $tabs = $this->xytTabs;//$this->get_settings_page_tabs();
+      $tabs = $this->get_settings_page_tabs();
       $links = array();
       foreach( $tabs as $tab => $name ) :
           if ( $tab == $current ) :

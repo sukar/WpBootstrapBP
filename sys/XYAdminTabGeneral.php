@@ -9,6 +9,7 @@ class XYAdminTabGeneral extends XYAdminTabs {
   function __construct()
   {
     $this->cfg = array(
+      'name' => "General",
       'title' => 'General',
       'field' => array(
         'textbox1' => array(
@@ -19,16 +20,25 @@ class XYAdminTabGeneral extends XYAdminTabs {
         )
     );
   }
+
+  function getName()
+  {
+    return $this->cfg['name'];
+  }
   
   function printSection() 
   {
-    echo '<h2>Section General</h2>';
+    if ($this->currentTab($this->getName())) {
+      echo '<h2>Section '.$this->cfg['title'].'</h2>';
+    }
   }
 
   function printFields() {
-    $options = $this->getTabOptions();
-    foreach ($options as $name => $value) {
-      echo '<input id="'.XY.'_General_'.$name.'" name="'.XY.'_S_General['.$name.']" size="40" type="'.$this->cfg['field'][$name]['type'].'" value="'.$value.'" />';
+    if ($this->currentTab($this->getName())) {
+      $options = $this->getTabOptions();
+      foreach ($options as $name => $value) {
+        echo '<input id="'.XY.'_'.$this->getName().'_'.$name.'" name="'.XY.'_'.$this->getName().'['.$name.']" size="40" type="'.$this->cfg['field'][$name]['type'].'" value="'.$value.'" />';
+      }       
     }
   }
 
@@ -38,14 +48,14 @@ class XYAdminTabGeneral extends XYAdminTabs {
     foreach ( $this->cfg['field'] as $key => $keyarray ) {
       $cfg[$key] = $keyarray['value'];
     }
-    $options = wp_parse_args(get_option(XY.'_S_General', array()), $cfg);
+    $options = wp_parse_args(get_option(XY.'_'.$this->getName(), array()), $cfg);
     return $options;
   }
 
   function validate($input) 
   {
-    unset($input['submit-General']);
-    unset($input['reset-General']);
+    if (isset($input['submit-'.$this->getName()])) unset($input['submit-'.$this->getName()]);
+    if (isset($input['reset-'.$this->getName()]))  unset($input['reset-'.$this->getName()]);
     return $input;
   }
 }

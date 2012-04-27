@@ -12,7 +12,8 @@ class XYAdminTabs {
     echo '<h2>Section Abstract</h2>';
   }
 
-  function printFields() {
+  function printFields() 
+  {
     echo '<input id="'.XY.'_abstract" name="'.XY.'[abstract]" size="40" type="hidden" value="'.XY.'" />';
   }
 
@@ -24,6 +25,18 @@ class XYAdminTabs {
   function validate($input) 
   {
     return $input;
+  }
+
+  function currentTab($tab = "General")
+  {
+    $tabget = "General";
+    if (isset($_GET['tab'])) {
+      $tabget = $_GET['tab'];
+    }
+    if ($tab == $tabget) {
+      return true;
+    }
+    return false;
   }
 
 }
