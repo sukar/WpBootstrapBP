@@ -5,21 +5,32 @@
  */
 
 class XYAdminTabs {
-  private $cfg = array();
+  private $cfg;
   
-  function printSection() 
+  function __construct()
   {
-    echo '<h2>Section Abstract</h2>';
+    $this->init();
   }
 
-  function printFields() 
+  function init()
   {
-    echo '<input id="'.XY.'_abstract" name="'.XY.'[abstract]" size="40" type="hidden" value="'.XY.'" />';
+    $this->cfg = array();
+  }
+
+  function getName()
+  {
   }
 
   function getTabOptions() 
   {
-    return array();
+  }
+
+  function printSection() 
+  {
+  }
+
+  function printFields() 
+  {
   }
 
   function validate($input) 

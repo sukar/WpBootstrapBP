@@ -49,11 +49,10 @@ class XYAdmin extends XYHelper {
         add_filter('wp_page_menu_args', array(&$this, 'main_menu_args'));
 
         if ( is_admin() ){ // admin actions
-          // Load the Admin Options page
-          add_action('admin_menu', array(&$this, 'menu_options'));
-
           // Settings API options initilization and validation
           add_action( 'admin_init', array(&$this, 'register_options'));
+          // Load the Admin Options page
+          add_action('admin_menu', array(&$this, 'menu_options'));
         }
 
     }
@@ -80,21 +79,13 @@ class XYAdmin extends XYHelper {
       return $args;
     }
 
-    function menu_options() 
-    {
-      add_theme_page(XYNAME.' Settings', XYNAME , 'edit_theme_options', XY, array(&$this, 'admin_options_page'));
-    }
-
-    function register_options_old(){
-      // add_settings_section($id, $title, $callback, $page)
-      add_settings_section(XY.'_sections', 'Theme Section', array(&$this, 'plugin_section_text'), XY);
-      // add_settings_field($id, $title, $callback, $page, $section = 'default', $args = array())
-      add_settings_field(XY, 'Theme Fields', array(&$this, 'plugin_setting_string'), XY, XY.'_sections');
-      // register_setting( $option_group, $option_name, $sanitize_callback )
-      register_setting(XY, XY, array(&$this, 'options_validate'));
-    }
-
     function register_options(){
+      wp_register_style( XY.'_ColorpickerCSS', get_bloginfo('template_directory').'/css/colorpicker/colorpicker.css' );
+      wp_register_style( XY.'_AdminCSS', get_bloginfo('template_directory').'/css/admin/admin.css' );
+
+      wp_register_script(XY.'_ColorpickerJS', get_bloginfo('template_directory').'/js/libs/colorpicker/colorpicker.js');
+      wp_register_script(XY.'_AdminJS', get_bloginfo('template_directory').'/js/libs/admin/admin.js');
+
       $tabs = $this->get_settings_page_tabs();
       foreach ($tabs as $name => $label) {
         $classname = 'XYAdminTab'.$name;
@@ -111,6 +102,20 @@ class XYAdmin extends XYHelper {
         add_settings_field(XY.'_F_'.$name, $label.' Fields', array(&$this->xytTabObj[$name], 'printFields'), XY.'_'.$name, XY.'_S_'.$name);
         
       }
+    }
+
+    function menu_options() 
+    {
+      $page = add_theme_page(XYNAME.' Settings', XYNAME , 'edit_theme_options', XY, array(&$this, 'admin_options_page'));
+      add_action( 'admin_print_styles-' . $page, array(&$this, 'admin_styles'));
+    }
+
+    function admin_styles() {
+       wp_enqueue_style(XY.'_ColorpickerCSS');
+       wp_enqueue_style(XY.'_AdminCSS');
+
+       wp_enqueue_script(XY.'_ColorpickerJS',array('jquery'));
+       wp_enqueue_script(XY.'_AdminJS',array('jquery'));
     }
 
     function plugin_section_text() 

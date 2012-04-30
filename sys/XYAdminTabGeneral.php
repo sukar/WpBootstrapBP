@@ -8,6 +8,12 @@ class XYAdminTabGeneral extends XYAdminTabs {
   
   function __construct()
   {
+    parent::__construct();
+    $this->init();
+  }
+
+  function init()
+  {
     $this->cfg = array(
       'name' => "General",
       'title' => 'General',
@@ -16,8 +22,18 @@ class XYAdminTabGeneral extends XYAdminTabs {
           'label' => "Text No.1",
           'type' => "text",
           'value' => "textbox 1" 
-          )
+        ),
+        'textcolor1' => array(
+          'label' => "Text Color 1",
+          'type' => "color",
+          'value' => "00ff00"
+        ),
+        'textcolor2' => array(
+          'label' => "Text Color 2",
+          'type' => "color",
+          'value' => "FFff00"
         )
+      )
     );
   }
 
@@ -25,6 +41,17 @@ class XYAdminTabGeneral extends XYAdminTabs {
   {
     return $this->cfg['name'];
   }
+
+  function getTabOptions() 
+  {
+    $cfg = array();
+    foreach ( $this->cfg['field'] as $key => $keyarray ) {
+      $cfg[$key] = $keyarray['value'];
+    }
+    $options = wp_parse_args(get_option(XY.'_'.$this->getName(), array()), $cfg);
+    return $options;
+  }
+
   
   function printSection() 
   {
@@ -37,20 +64,18 @@ class XYAdminTabGeneral extends XYAdminTabs {
     if ($this->currentTab($this->getName())) {
       $options = $this->getTabOptions();
       foreach ($options as $name => $value) {
-        echo '<input id="'.XY.'_'.$this->getName().'_'.$name.'" name="'.XY.'_'.$this->getName().'['.$name.']" size="40" type="'.$this->cfg['field'][$name]['type'].'" value="'.$value.'" />';
+        echo '<div>';
+        if ( $this->cfg['field'][$name]['type'] == "color") {
+          echo '<div class="colorSelector"><div style="background-color: #'.$value.'"></div></div>';
+          echo '<input id="'.XY.'_'.$this->getName().'_'.$name.'" name="'.XY.'_'.$this->getName().'['.$name.']" type="text" value="'.$value.'" class="colorInput" />';
+        } else {
+          echo '<input id="'.XY.'_'.$this->getName().'_'.$name.'" name="'.XY.'_'.$this->getName().'['.$name.']" type="'.$this->cfg['field'][$name]['type'].'" value="'.$value.'" />';
+        }
+        echo '</div>';
       }       
     }
   }
 
-  function getTabOptions() 
-  {
-    $cfg = array();
-    foreach ( $this->cfg['field'] as $key => $keyarray ) {
-      $cfg[$key] = $keyarray['value'];
-    }
-    $options = wp_parse_args(get_option(XY.'_'.$this->getName(), array()), $cfg);
-    return $options;
-  }
 
   function validate($input) 
   {
